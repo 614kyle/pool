@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haas Estate Pool Heater Timer</title>
+<style>
+  :root {
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --blue-dark: #1e40af;
+    --orange: #ea580c;
+    --orange-light: #fff7ed;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%);
+    min-height: 100vh;
+    color: var(--gray-900);
+    padding: 16px;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    padding: 24px 0 20px;
+  }
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--blue-dark);
+    line-height: 1.2;
+  }
+  .header p {
+    color: var(--gray-500);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-500);
+    margin-bottom: 14px;
+  }
+
+  .field {
+    margin-bottom: 14px;
+  }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 5px;
+  }
+  label .hint {
+    font-weight: 400;
+    color: var(--gray-500);
+    font-size: 0.82rem;
+  }
+
+  input[type="number"],
+  input[type="time"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+  }
+  .row .field { flex: 1; }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 4px;
+  }
+  .btn:hover { background: var(--blue-dark); }
+  .btn:active { transform: scale(0.99); }
+
+  /* Results */
+  .results { display: none; }
+  .results.show { display: block; }
+
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .result-item:last-child { border-bottom: none; }
+
+  .result-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .icon-heater { background: var(--orange-light); }
+  .icon-blanket { background: var(--blue-light); }
+  .icon-info { background: var(--green-light); }
+  .icon-propane { background: #fef2f2; }
+
+  .result-text h3 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gray-500);
+    margin-bottom: 2px;
+  }
+  .result-text .value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+  .result-text .detail {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+
+  .warning {
+    background: #fef3c7;
+    border-left: 3px solid #f59e0b;
+    padding: 10px 12px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+    color: #92400e;
+    margin-top: 12px;
+    display: none;
+  }
+  .warning.show { display: block; }
+
+  .footer {
+    text-align: center;
+    padding: 16px 0;
+    color: var(--gray-500);
+    font-size: 0.78rem;
+  }
+
+  /* Quick preset buttons */
+  .presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .preset-btn {
+    padding: 5px 10px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--gray-700);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-light);
+  }
+
+  /* Calendar button */
+  .cal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: var(--blue);
+    border: 1.5px solid var(--blue);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 14px;
+    text-decoration: none;
+  }
+  .cal-btn:hover {
+    background: var(--blue-light);
+  }
+  .cal-link { display: none; }
+  .cal-link.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Haas Estate Pool Heater Timer</h1>
+    <p>Raypak P-M406A &bull; Propane</p>
+  </div>
+
+  <!-- Pool Temps -->
+  <div class="card">
+    <div class="card-title">Pool Temperature</div>
+    <div class="row">
+      <div class="field">
+        <label>Current Temp (&deg;F)</label>
+        <input type="number" id="currentTemp" placeholder="e.g. 72" min="40" max="104" step="1">
+      </div>
+      <div class="field">
+        <label>Target Temp (&deg;F)</label>
+        <input type="number" id="targetTemp" placeholder="e.g. 85" min="50" max="104" step="1" value="85">
+      </div>
+    </div>
+  </div>
+
+  <!-- Deadline & Pool Size -->
+  <div class="card">
+    <div class="card-title">Date &amp; Time</div>
+    <div class="field">
+      <label>Pool must reach target temperature by</label>
+      <input type="date" id="deadlineDate">
+    </div>
+    <div class="field">
+      <input type="time" id="deadline" value="14:00">
+      <div class="presets">
+        <button class="preset-btn" onclick="setDeadline('10:00')">10 AM</button>
+        <button class="preset-btn" onclick="setDeadline('12:00')">Noon</button>
+        <button class="preset-btn" onclick="setDeadline('14:00')">2 PM</button>
+        <button class="preset-btn" onclick="setDeadline('16:00')">4 PM</button>
+      </div>
+    </div>
+    <input type="hidden" id="poolSize" value="12000">
+  </div>
+
+  <!-- Weather -->
+  <div class="card">
+    <div class="card-title">Forecast Weather Conditions</div>
+    <div class="row">
+      <div class="field">
+        <label>Air Temp (&deg;F)</label>
+        <input type="number" id="airTemp" placeholder="e.g. 65" min="20" max="110" step="1">
+      </div>
+      <div class="field">
+        <label>Wind</label>
+        <select id="wind">
+          <option value="calm">Calm</option>
+          <option value="light" selected>Light breeze</option>
+          <option value="moderate">Moderate</option>
+          <option value="strong">Strong / Gusty</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-top: 14px;">
+      <label>Sky</label>
+      <select id="sky">
+        <option value="sunny">Sunny</option>
+        <option value="partly" selected>Partly cloudy</option>
+        <option value="overcast">Overcast</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Calculate -->
+  <div class="card">
+    <button class="btn" onclick="calculate()">Calculate Heater Start Time</button>
+  </div>
+
+  <!-- Results -->
+  <div class="card results" id="results">
+    <div class="card-title">Your Plan</div>
+
+    <div class="result-item">
+      <div class="result-icon icon-heater">🔥</div>
+      <div class="result-text">
+        <h3>Turn On Heater</h3>
+        <div class="value" id="heaterTime">--</div>
+        <div class="detail" id="heaterDetail">--</div>
+      </div>
+    </div>
+
+    <div class="result-item">
+      <div class="result-icon icon-blanket">💧</div>
+      <div class="result-text">
+        <h3>Add Liquid Pool Blanket</h3>
+        <div class="value" id="blanketTime">--</div>
+        <div class="detail" id="blanketDetail">--</div>
+      </div>
+    </div>
+
+    <div class="result-item">
+      <div class="result-icon icon-info">📊</div>
+      <div class="result-text">
+        <h3>Estimated Heating Time</h3>
+        <div class="value" id="heatingDuration">--</div>
+        <div class="detail" id="heatingDetail">--</div>
+      </div>
+    </div>
+
+    <div class="result-item">
+      <div class="result-icon icon-propane">⛽</div>
+      <div class="result-text">
+        <h3>Propane to Heat Up</h3>
+        <div class="value" id="propaneGallons">--</div>
+        <div class="detail" id="propaneDetail">--</div>
+      </div>
+    </div>
+
+    <div class="result-item">
+      <div class="result-icon icon-propane">⛽</div>
+      <div class="result-text">
+        <h3>Propane to Maintain Temperature</h3>
+        <div class="value" id="maintainPropane">--</div>
+        <div class="detail" id="maintainDetail">--</div>
+      </div>
+    </div>
+
+    <div class="warning" id="warning"></div>
+
+    <div class="cal-link" id="calLink">
+      <a class="cal-btn" id="calBtn" download="pool-heater-reminder.ics">
+        <span>📅</span> Add to Calendar
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Based on Raypak P-M406A specs (~399K BTU input) &bull; 12,000 gal pool.<br>
+    Estimates may vary with pool cover, shade, and pump flow.
+  </div>
+</div>
+
+<script>
+// Default date to today
+(function() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = (now.getMonth() + 1).toString().padStart(2, '0');
+  const d = now.getDate().toString().padStart(2, '0');
+  document.getElementById('deadlineDate').value = `${y}-${m}-${d}`;
+})();
+
+function setDeadline(time) {
+  document.getElementById('deadline').value = time;
+}
+
+function calculate() {
+  // Gather inputs
+  const currentTemp = parseFloat(document.getElementById('currentTemp').value);
+  const targetTemp = parseFloat(document.getElementById('targetTemp').value);
+  const deadline = document.getElementById('deadline').value;
+  const deadlineDateVal = document.getElementById('deadlineDate').value;
+  const poolSize = parseFloat(document.getElementById('poolSize').value);
+  const airTemp = parseFloat(document.getElementById('airTemp').value);
+  const wind = document.getElementById('wind').value;
+  const sky = document.getElementById('sky').value;
+
+  // Validate
+  if (!currentTemp || !targetTemp || !deadline || !deadlineDateVal || !airTemp) {
+    alert('Please fill in all fields.');
+    return;
+  }
+  if (currentTemp >= targetTemp) {
+    alert('Your pool is already at or above the target temperature!');
+    return;
+  }
+
+  const degToRaise = targetTemp - currentTemp;
+
+  // Raypak P-M406A: 399,000 BTU input, ~80% thermal efficiency
+  const btuOutput = 399000 * 0.80; // 319,200 BTU/hr effective
+  const waterWeightLbs = poolSize * 8.34;
+
+  // Base time to raise temperature (no losses)
+  // BTU needed = weight × degrees
+  const btuNeeded = waterWeightLbs * degToRaise;
+  const baseHours = btuNeeded / btuOutput;
+
+  // Heat loss factor based on conditions
+  // Wind increases surface evaporation (biggest heat loss driver)
+  let windLossFactor;
+  switch (wind) {
+    case 'calm':    windLossFactor = 1.0;  break;
+    case 'light':   windLossFactor = 1.12; break;
+    case 'moderate': windLossFactor = 1.25; break;
+    case 'strong':  windLossFactor = 1.45; break;
+    default:        windLossFactor = 1.12;
+  }
+
+  // Air temp differential — bigger gap = more heat loss
+  const tempDiff = Math.max(0, targetTemp - airTemp);
+  // Roughly 2% more time per 5°F differential above 10°F
+  const airLossFactor = 1 + Math.max(0, (tempDiff - 10)) * 0.004;
+
+  // Sky — sun helps, overcast hurts
+  let skyFactor;
+  switch (sky) {
+    case 'sunny':    skyFactor = 0.94; break; // sun provides some free heat
+    case 'partly':   skyFactor = 1.0;  break;
+    case 'overcast': skyFactor = 1.06; break;
+    default:         skyFactor = 1.0;
+  }
+
+  // Total heating time
+  const totalHours = baseHours * windLossFactor * airLossFactor * skyFactor;
+  const totalMinutes = Math.ceil(totalHours * 60);
+
+  // Parse deadline into selected date
+  const [dHour, dMin] = deadline.split(':').map(Number);
+  const [dYear, dMonth, dDay] = deadlineDateVal.split('-').map(Number);
+  const deadlineDate = new Date(dYear, dMonth - 1, dDay, dHour, dMin, 0, 0);
+
+  // Calculate start time
+  let startDate = new Date(deadlineDate.getTime() - totalMinutes * 60000);
+
+  // Enforce 7 AM – 9 PM window
+  let warning = '';
+  const startHour = startDate.getHours();
+  const startMinute = startDate.getMinutes();
+
+  // Check if start time falls outside 7am-9pm
+  const startTotalMinutes = startHour * 60 + startMinute;
+  const earliest = 7 * 60;  // 7:00 AM
+  const latest = 21 * 60;   // 9:00 PM
+
+  if (startTotalMinutes < earliest) {
+    // Before 7 AM — move to 9 PM the night before
+    startDate.setDate(startDate.getDate() - 1);
+    startDate.setHours(21, 0, 0, 0);
+    warning = 'The calculation says to start before 7 AM. Start at 9 PM the evening before instead — the heater will run longer but the pool will be ready.';
+  } else if (startTotalMinutes >= latest) {
+    // After 9 PM — cap at 9 PM
+    startDate.setHours(21, 0, 0, 0);
+    warning = 'Start time pushed to 9 PM (the latest recommended). The pool may take a bit longer to reach the exact target.';
+  }
+
+  // Liquid pool blanket: apply 30 min after heater starts
+  // (lets the heater warm the surface first, then blanket reduces evaporation loss)
+  const blanketDate = new Date(startDate.getTime() + 30 * 60000);
+
+  // Format times
+  const fmtTime = (d) => {
+    let h = d.getHours();
+    const m = d.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    if (h === 0) h = 12;
+    else if (h > 12) h -= 12;
+    return `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+  };
+
+  const fmtDate = (d) => {
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+  };
+
+  const heaterDateStr = fmtDate(startDate);
+  const blanketDateStr = fmtDate(blanketDate);
+  const deadlineDateStr = fmtDate(deadlineDate);
+
+  // Heating rate for display
+  const degPerHour = (degToRaise / totalHours).toFixed(1);
+
+  // Hours and minutes display
+  const dispHours = Math.floor(totalMinutes / 60);
+  const dispMins = totalMinutes % 60;
+  let durationStr = '';
+  if (dispHours > 0) durationStr += `${dispHours} hr `;
+  if (dispMins > 0) durationStr += `${dispMins} min`;
+  durationStr = durationStr.trim();
+
+  // Populate results
+  document.getElementById('heaterTime').textContent = `${fmtTime(startDate)} — ${heaterDateStr}`;
+  document.getElementById('heaterDetail').textContent =
+    `Turn on the Raypak to reach ${targetTemp}°F by ${fmtTime(deadlineDate)} on ${deadlineDateStr}`;
+
+  document.getElementById('blanketTime').textContent = `${fmtTime(blanketDate)} — ${blanketDateStr}`;
+  document.getElementById('blanketDetail').textContent =
+    `Add 30 min after heater starts to lock in heat`;
+
+  document.getElementById('heatingDuration').textContent = durationStr;
+  document.getElementById('heatingDetail').textContent =
+    `${degToRaise}°F to raise at ~${degPerHour}°F/hr (${wind} wind, ${sky})`;
+
+  // Propane usage estimate
+  // Raypak P-M406A input: 399,000 BTU/hr; propane: ~91,500 BTU/gal
+  const propaneGalPerHour = 399000 / 91500; // ~4.36 gal/hr
+  const propaneGallons = totalHours * propaneGalPerHour;
+  const propaneRounded = propaneGallons < 10
+    ? propaneGallons.toFixed(1)
+    : Math.round(propaneGallons);
+  document.getElementById('propaneGallons').textContent = `~${propaneRounded} gallons`;
+  document.getElementById('propaneDetail').textContent =
+    `At ~${propaneGalPerHour.toFixed(1)} gal/hr for ${durationStr} of run time`;
+
+  // Maintenance propane estimate
+  // Heat loss model: pool surface loses heat via convection, radiation, evaporation
+  // For a typical 12,000-gal pool (~450 sq ft surface):
+  const poolSurfaceSqFt = 450;
+  const tempDiffMaint = Math.max(0, targetTemp - airTemp);
+
+  // Base heat loss ~10 BTU/hr per sq ft per °F differential (still water, no wind)
+  // This is a simplified model combining convection + radiation + evaporation
+  let baseLossPerSqFt = 10;
+
+  // Wind multiplier on heat loss
+  let windMaintFactor;
+  switch (wind) {
+    case 'calm':    windMaintFactor = 1.0;  break;
+    case 'light':   windMaintFactor = 1.4;  break;
+    case 'moderate': windMaintFactor = 1.9; break;
+    case 'strong':  windMaintFactor = 2.5;  break;
+    default:        windMaintFactor = 1.4;
+  }
+
+  // Sky factor — sun offsets some loss
+  let skyMaintFactor;
+  switch (sky) {
+    case 'sunny':    skyMaintFactor = 0.7; break;
+    case 'partly':   skyMaintFactor = 0.85; break;
+    case 'overcast': skyMaintFactor = 1.0;  break;
+    default:         skyMaintFactor = 0.85;
+  }
+
+  // Total heat loss in BTU/hr
+  const heatLossBtuHr = poolSurfaceSqFt * baseLossPerSqFt * tempDiffMaint * windMaintFactor * skyMaintFactor;
+
+  // Heater efficiency: 80% — so propane input needed = loss / 0.80
+  // Propane: 91,500 BTU/gal
+  const maintGalPerHour = heatLossBtuHr / 0.80 / 91500;
+
+  const maint12 = (maintGalPerHour * 12);
+  const maint24 = (maintGalPerHour * 24);
+  const maint36 = (maintGalPerHour * 36);
+
+  const fmtGal = (g) => g < 10 ? g.toFixed(1) : Math.round(g);
+
+  document.getElementById('maintainPropane').textContent =
+    `~${fmtGal(maint12)} / ${fmtGal(maint24)} / ${fmtGal(maint36)} gallons`;
+  document.getElementById('maintainDetail').textContent =
+    `For 12 / 24 / 36 hrs at ${targetTemp}°F (${airTemp}°F air, ${wind} wind, ${sky})`;
+
+  // Warning
+  const warningEl = document.getElementById('warning');
+  if (warning) {
+    warningEl.textContent = warning;
+    warningEl.classList.add('show');
+  } else {
+    warningEl.classList.remove('show');
+  }
+
+  // Build .ics calendar file
+  const icsDate = (d) => {
+    const pad = (n) => n.toString().padStart(2, '0');
+    return d.getFullYear().toString() +
+      pad(d.getMonth() + 1) +
+      pad(d.getDate()) + 'T' +
+      pad(d.getHours()) +
+      pad(d.getMinutes()) + '00';
+  };
+
+  const icsEnd = new Date(startDate.getTime() + 15 * 60000); // 15-min reminder event
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Sharon Pool Heater//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${icsDate(startDate)}`,
+    `DTEND:${icsDate(icsEnd)}`,
+    `SUMMARY:Turn On Pool Heater`,
+    `DESCRIPTION:Turn on the Raypak P-M406A to reach ${targetTemp}°F by ${fmtTime(deadlineDate)}. Add liquid pool blanket at ${fmtTime(blanketDate)}.`,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT10M',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Time to turn on the pool heater!',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const calBtn = document.getElementById('calBtn');
+  calBtn.href = url;
+  document.getElementById('calLink').classList.add('show');
+
+  // Show results
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
