@@ -6,32 +6,36 @@
 <title>Haas Estate Pool &amp; Spa</title>
 <style>
   :root {
-    --blue: #2563eb;
-    --blue-light: #dbeafe;
-    --blue-dark: #1e40af;
-    --orange: #ea580c;
-    --orange-light: #fff7ed;
-    --orange-dark: #c2410c;
-    --green: #16a34a;
-    --green-light: #f0fdf4;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-500: #6b7280;
-    --gray-700: #374151;
-    --gray-900: #111827;
+    --burgundy: #6B2D3E;
+    --burgundy-light: #f2e8eb;
+    --burgundy-dark: #4A1E2B;
+    --orange: #C4653A;
+    --orange-light: #faf0eb;
+    --orange-dark: #A04E2A;
+    --blue: #5B7C99;
+    --blue-light: #e8eff5;
+    --blue-dark: #3D5A73;
+    --green: #5A8A5E;
+    --green-light: #eef4ef;
+    --gray-50: #FAF8F8;
+    --gray-100: #F3EFEF;
+    --gray-200: #E0D8D8;
+    --gray-300: #CFC5C5;
+    --gray-500: #8C7E7E;
+    --gray-700: #4A3F3F;
+    --gray-900: #2A2020;
     --radius: 16px;
-    --accent: var(--blue);
-    --accent-dark: var(--blue-dark);
-    --accent-light: var(--blue-light);
+    --accent: var(--burgundy);
+    --accent-dark: var(--burgundy-dark);
+    --accent-light: var(--burgundy-light);
+    --card-bg: #FFFAFA;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%);
+    background: linear-gradient(160deg, #4A1E2B 0%, #6B2D3E 40%, #7D3A4E 100%);
     min-height: 100vh;
     min-height: 100dvh;
     color: var(--gray-900);
@@ -56,11 +60,11 @@
   .home-header h1 {
     font-size: 1.7rem;
     font-weight: 700;
-    color: var(--blue-dark);
+    color: #FFFAFA;
     line-height: 1.2;
   }
   .home-header .subtitle {
-    color: var(--gray-500);
+    color: #D4B5BC;
     font-size: 0.9rem;
     margin-top: 4px;
   }
@@ -78,7 +82,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: #fff;
+    background: var(--card-bg);
     border: 2px solid var(--gray-200);
     border-radius: var(--radius);
     padding: 24px 12px;
@@ -86,6 +90,7 @@
     transition: all 0.2s;
     text-align: center;
     min-height: 140px;
+    box-shadow: 0 2px 8px rgba(74,30,43,0.1);
   }
   .workflow-btn:active { transform: scale(0.97); }
 
@@ -107,17 +112,70 @@
   }
 
   .wf-on .wf-icon { background: var(--orange-light); }
-  .wf-on { border-color: #fed7aa; }
+  .wf-on { border-color: #E8CFC0; }
   .wf-on:hover { border-color: var(--orange); background: var(--orange-light); }
 
   .wf-off .wf-icon { background: var(--blue-light); }
-  .wf-off { border-color: #bfdbfe; }
+  .wf-off { border-color: #C5D4E0; }
   .wf-off:hover { border-color: var(--blue); background: var(--blue-light); }
+
+  /* ───── CALCULATOR PANEL ───── */
+  .calc-panel {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(74,30,43,0.1), 0 8px 24px rgba(74,30,43,0.06);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .calc-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .calc-panel-header:hover {
+    background: var(--gray-100);
+  }
+
+  .calc-panel-header h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  .calc-panel-chevron {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+  }
+
+  .calc-panel.expanded .calc-panel-chevron {
+    transform: rotate(180deg);
+  }
+
+  .calc-panel-content {
+    display: none;
+    padding: 0 22px 22px 22px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .calc-panel.expanded .calc-panel-content {
+    display: block;
+    max-height: 2000px;
+  }
 
   .home-footer {
     text-align: center;
     padding: 16px 0;
-    color: var(--gray-500);
+    color: #D4B5BC;
     font-size: 0.78rem;
     margin-top: auto;
   }
@@ -140,8 +198,8 @@
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    border: 1.5px solid var(--gray-200);
-    background: #fff;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -150,7 +208,7 @@
     flex-shrink: 0;
     transition: all 0.15s;
   }
-  .topbar-home:hover { border-color: var(--gray-300); background: var(--gray-50); }
+  .topbar-home:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.25); }
 
   .topbar-progress {
     flex: 1;
@@ -161,11 +219,11 @@
   .topbar-title {
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--gray-700);
+    color: #FFFAFA;
   }
   .progress-bar {
     height: 6px;
-    background: var(--gray-200);
+    background: rgba(255,255,255,0.2);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -174,12 +232,12 @@
     border-radius: 3px;
     transition: width 0.4s ease;
   }
-  .accent-orange .progress-fill { background: var(--orange); }
-  .accent-blue .progress-fill { background: var(--blue); }
+  .accent-orange .progress-fill { background: #D4956E; }
+  .accent-blue .progress-fill { background: #8BADC4; }
 
   .topbar-step {
     font-size: 0.78rem;
-    color: var(--gray-500);
+    color: #D4B5BC;
     white-space: nowrap;
     flex-shrink: 0;
     min-width: 60px;
@@ -188,10 +246,10 @@
 
   /* Step card */
   .step-card {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: var(--radius);
     padding: 28px 22px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 8px rgba(74,30,43,0.1), 0 8px 24px rgba(74,30,43,0.06);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -255,6 +313,14 @@
     display: block;
   }
 
+  .valve-caption {
+    text-align: center;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-top: 10px;
+  }
+
   /* Step actions (buttons at bottom) */
   .step-actions {
     display: flex;
@@ -294,7 +360,7 @@
   .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-300); }
   .btn-secondary:active { transform: scale(0.98); }
 
-  /* ───── CALCULATOR (embedded in wizard step) ───── */
+  /* ───── CALCULATOR (embedded in home and wizard step) ───── */
   .calc-section { margin-top: 8px; }
 
   .card-title {
@@ -340,8 +406,8 @@
   }
   input:focus, select:focus {
     outline: none;
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    border-color: var(--burgundy);
+    box-shadow: 0 0 0 3px rgba(107,45,62,0.12);
   }
 
   .row {
@@ -367,9 +433,9 @@
     transition: all 0.15s;
   }
   .preset-btn:hover {
-    border-color: var(--blue);
-    color: var(--blue);
-    background: var(--blue-light);
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+    background: var(--burgundy-light);
   }
 
   /* Forecast button */
@@ -390,7 +456,7 @@
     transition: all 0.15s;
     margin-bottom: 14px;
   }
-  .forecast-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+  .forecast-btn:hover { border-color: var(--burgundy); color: var(--burgundy); background: var(--burgundy-light); }
   .forecast-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .forecast-status {
@@ -417,7 +483,9 @@
     transition: background 0.15s;
     margin-top: 8px;
     color: #fff;
+    background: var(--burgundy);
   }
+  .calc-btn:hover { background: var(--burgundy-dark); }
   .accent-orange .calc-btn { background: var(--orange); }
   .accent-orange .calc-btn:hover { background: var(--orange-dark); }
   .accent-blue .calc-btn { background: var(--blue); }
@@ -446,7 +514,7 @@
   .icon-heater { background: var(--orange-light); }
   .icon-blanket { background: var(--blue-light); }
   .icon-info { background: var(--green-light); }
-  .icon-propane { background: #fef2f2; }
+  .icon-propane { background: var(--burgundy-light); }
 
   .result-text h3 {
     font-size: 0.85rem;
@@ -485,8 +553,8 @@
     width: 100%;
     padding: 12px;
     background: #fff;
-    color: var(--blue);
-    border: 1.5px solid var(--blue);
+    color: var(--burgundy);
+    border: 1.5px solid var(--burgundy);
     border-radius: 8px;
     font-size: 0.95rem;
     font-weight: 600;
@@ -495,7 +563,7 @@
     margin-top: 14px;
     text-decoration: none;
   }
-  .cal-btn:hover { background: var(--blue-light); }
+  .cal-btn:hover { background: var(--burgundy-light); }
 
   #calcResults { display: none; }
   #calcResults.show { display: block; }
@@ -591,6 +659,17 @@
       </button>
     </div>
 
+    <!-- Calculator Collapsible Panel -->
+    <div class="calc-panel" id="homeCalcPanel">
+      <div class="calc-panel-header" onclick="toggleCalcPanel()">
+        <h3>Heater Timer Calculator</h3>
+        <span class="calc-panel-chevron">&#x02C5;</span>
+      </div>
+      <div class="calc-panel-content" id="homeCalcContent">
+        <!-- Calculator will be inserted here -->
+      </div>
+    </div>
+
     <div class="home-footer">
       Raypak P-M406A &bull; ~399K BTU input &bull; Propane &bull; 12,000 gal pool
     </div>
@@ -604,7 +683,7 @@
         <div class="topbar-title" id="wizardTitle">--</div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
-      <div class="topbar-step" id="stepIndicator">Step 1 of 7</div>
+      <div class="topbar-step" id="stepIndicator">Step 1 of 6</div>
     </div>
 
     <div class="step-card" id="stepCard">
@@ -619,44 +698,15 @@
 
 <script>
 // ══════════════════════════════════════════════════
-// WORKFLOW DEFINITIONS
+// VALVE PHOTO
 // ══════════════════════════════════════════════════
 
-const VALVE_SVG_RED = `<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:#f8fafc;border-radius:8px">
-  <style>text{font-family:-apple-system,sans-serif;font-weight:600}</style>
-  <!-- Pipes -->
-  <rect x="20" y="80" width="160" height="24" rx="4" fill="#94a3b8"/>
-  <rect x="220" y="80" width="160" height="24" rx="4" fill="#94a3b8"/>
-  <!-- Valve body -->
-  <rect x="155" y="60" width="90" height="64" rx="12" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
-  <!-- Handle - RED position -->
-  <rect x="170" y="20" width="60" height="18" rx="4" fill="#ef4444"/>
-  <rect x="196" y="36" width="8" height="28" fill="#b91c1c"/>
-  <!-- Red arrow showing direction -->
-  <polygon points="200,140 180,160 190,160 190,195 210,195 210,160 220,160" fill="#ef4444"/>
-  <!-- Labels -->
-  <text x="200" y="210" text-anchor="middle" fill="#ef4444" font-size="16">HEAT ON (Red Position)</text>
-  <text x="90" y="75" text-anchor="middle" fill="#64748b" font-size="12">FROM POOL</text>
-  <text x="310" y="75" text-anchor="middle" fill="#64748b" font-size="12">TO HEATER</text>
-</svg>`;
+const VALVE_PHOTO = 'data:image/jpeg;base64,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
+...TRUNCATED_BASE64...';
 
-const VALVE_SVG_GREEN = `<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:#f8fafc;border-radius:8px">
-  <style>text{font-family:-apple-system,sans-serif;font-weight:600}</style>
-  <!-- Pipes -->
-  <rect x="20" y="80" width="160" height="24" rx="4" fill="#94a3b8"/>
-  <rect x="220" y="80" width="160" height="24" rx="4" fill="#94a3b8"/>
-  <!-- Valve body -->
-  <rect x="155" y="60" width="90" height="64" rx="12" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
-  <!-- Handle - GREEN position -->
-  <rect x="170" y="20" width="60" height="18" rx="4" fill="#22c55e"/>
-  <rect x="196" y="36" width="8" height="28" fill="#15803d"/>
-  <!-- Green arrow showing direction -->
-  <polygon points="200,140 180,160 190,160 190,195 210,195 210,160 220,160" fill="#22c55e"/>
-  <!-- Labels -->
-  <text x="200" y="210" text-anchor="middle" fill="#16a34a" font-size="16">HEAT OFF (Green Position)</text>
-  <text x="90" y="75" text-anchor="middle" fill="#64748b" font-size="12">FROM POOL</text>
-  <text x="310" y="75" text-anchor="middle" fill="#64748b" font-size="12">BYPASS</text>
-</svg>`;
+// ══════════════════════════════════════════════════
+// WORKFLOW DEFINITIONS
+// ══════════════════════════════════════════════════
 
 const WORKFLOWS = {
   poolOn: {
@@ -678,7 +728,8 @@ const WORKFLOWS = {
       {
         title: 'Confirm Valve Position',
         body: `<p>Confirm the valves match the <strong style="color:#ef4444">red (Heat On)</strong> position shown below:</p>
-               <div class="valve-img-container">${VALVE_SVG_RED}</div>`,
+               <div class="valve-img-container"><img src="${VALVE_PHOTO}" alt="Valve position"></div>
+               <div class="valve-caption">Turn valves to the RED position</div>`,
         actions: ['back', 'valves-set']
       },
       {
@@ -692,12 +743,6 @@ const WORKFLOWS = {
         body: `<p>In the <strong>Home</strong> app, turn <strong>off</strong> the Waterfall.</p>
                <p>The waterfall causes heat loss and should be off while heating the pool.</p>`,
         actions: ['back', 'next']
-      },
-      {
-        title: 'Heater Timer Calculator',
-        body: 'CALCULATOR',
-        context: 'pool',
-        actions: ['back', 'next-after-calc']
       },
       {
         title: 'Turn On Pool Heater',
@@ -735,7 +780,8 @@ const WORKFLOWS = {
       {
         title: 'Set Valves to Green',
         body: `<p>Return both 3-way valves near the pool heater to the <strong style="color:#16a34a">green position</strong> (Heat Off).</p>
-               <div class="valve-img-container">${VALVE_SVG_GREEN}</div>`,
+               <div class="valve-img-container"><img src="${VALVE_PHOTO}" alt="Valve position"></div>
+               <div class="valve-caption">Turn valves to the GREEN position</div>`,
         actions: ['cancel-home', 'done']
       }
     ]
@@ -760,7 +806,8 @@ const WORKFLOWS = {
       {
         title: 'Confirm Valve Position',
         body: `<p>Confirm the valves match the <strong style="color:#ef4444">red (Heat On)</strong> position shown below:</p>
-               <div class="valve-img-container">${VALVE_SVG_RED}</div>`,
+               <div class="valve-img-container"><img src="${VALVE_PHOTO}" alt="Valve position"></div>
+               <div class="valve-caption">Turn valves to the RED position</div>`,
         actions: ['back', 'valves-set']
       },
       {
@@ -779,12 +826,6 @@ const WORKFLOWS = {
         body: `<p>In the <strong>Home</strong> app, turn <strong>off</strong> the Waterfall.</p>
                <p>The waterfall causes heat loss and should be off while heating.</p>`,
         actions: ['back', 'next']
-      },
-      {
-        title: 'Heater Timer Calculator',
-        body: 'CALCULATOR',
-        context: 'spa',
-        actions: ['back', 'next-after-calc']
       },
       {
         title: 'Turn On Spa Heater',
@@ -827,7 +868,8 @@ const WORKFLOWS = {
       {
         title: 'Set Valves to Green',
         body: `<p>Return both 3-way valves near the pool heater to the <strong style="color:#16a34a">green position</strong> (Heat Off).</p>
-               <div class="valve-img-container">${VALVE_SVG_GREEN}</div>`,
+               <div class="valve-img-container"><img src="${VALVE_PHOTO}" alt="Valve position"></div>
+               <div class="valve-caption">Turn valves to the GREEN position</div>`,
         actions: ['cancel-home', 'done']
       }
     ]
@@ -842,7 +884,6 @@ let currentWorkflow = null;
 let currentStep = 0;
 let countdownInterval = null;
 let countdownRemaining = 0;
-let calcCompleted = false;
 
 // ══════════════════════════════════════════════════
 // NAVIGATION
@@ -856,16 +897,15 @@ function showScreen(id) {
 
 function goHome() {
   clearCountdown();
-  calcCompleted = false;
   currentWorkflow = null;
   currentStep = 0;
   showScreen('homeScreen');
+  initializeHomeCalculator();
 }
 
 function startWorkflow(key) {
   currentWorkflow = key;
   currentStep = 0;
-  calcCompleted = false;
   showScreen('wizardScreen');
   renderStep();
 }
@@ -908,10 +948,7 @@ function renderStep() {
 
   // Body content
   const bodyEl = document.getElementById('stepBody');
-  if (step.body === 'CALCULATOR') {
-    bodyEl.innerHTML = buildCalculatorHTML(step.context);
-    initCalcDefaults();
-  } else if (step.body.includes('COUNTDOWN')) {
+  if (step.body.includes('COUNTDOWN')) {
     bodyEl.innerHTML = step.body.replace('COUNTDOWN', buildCountdownHTML());
   } else {
     bodyEl.innerHTML = step.body;
@@ -925,9 +962,6 @@ function renderStep() {
     switch(action) {
       case 'next':
         actionsEl.innerHTML += `<button class="btn-primary" onclick="nextStep()">Continue</button>`;
-        break;
-      case 'next-after-calc':
-        actionsEl.innerHTML += `<button class="btn-primary" onclick="nextStep()" id="calcNextBtn" ${calcCompleted ? '' : 'disabled style=\"opacity:0.5;cursor:not-allowed\"'}>Next</button>`;
         break;
       case 'back':
         actionsEl.innerHTML += `<button class="btn-secondary" onclick="prevStep()">Back</button>`;
@@ -1035,7 +1069,7 @@ function toggleCountdown() {
 // CALCULATOR
 // ══════════════════════════════════════════════════
 
-function buildCalculatorHTML(context) {
+function buildCalculatorHTML(context = 'pool') {
   const label = context === 'spa' ? 'spa' : 'pool';
   const Label = context === 'spa' ? 'Spa' : 'Pool';
 
@@ -1171,6 +1205,17 @@ function setDeadline(time) {
   if (el) el.value = time;
 }
 
+function toggleCalcPanel() {
+  const panel = document.getElementById('homeCalcPanel');
+  panel.classList.toggle('expanded');
+}
+
+function initializeHomeCalculator() {
+  const content = document.getElementById('homeCalcContent');
+  content.innerHTML = buildCalculatorHTML('pool');
+  initCalcDefaults();
+}
+
 async function fetchForecast() {
   const dateVal = document.getElementById('deadlineDate').value;
   const timeVal = document.getElementById('deadline').value;
@@ -1198,7 +1243,7 @@ async function fetchForecast() {
     const [dHour] = timeVal.split(':').map(Number);
     const targetISO = `${dateVal}T${dHour.toString().padStart(2,'0')}:00`;
     const idx = data.hourly.time.indexOf(targetISO);
-    if (idx === -1) throw new Error('Forecast not available for that date \u2014 try a date within the next 16 days.');
+    if (idx === -1) throw new Error('Forecast not available for that date — try a date within the next 16 days.');
 
     const tempF = Math.round(data.hourly.temperature_2m[idx]);
     const windMph = data.hourly.wind_speed_10m[idx];
@@ -1221,7 +1266,7 @@ async function fetchForecast() {
 
     const windLabels = { calm:'Calm', light:'Light breeze', moderate:'Moderate', strong:'Strong' };
     const skyLabels = { sunny:'Sunny', partly:'Partly cloudy', overcast:'Overcast' };
-    statusEl.textContent = `Forecast loaded: ${tempF}\u00B0F, ${windLabels[windVal]}, ${skyLabels[skyVal]}`;
+    statusEl.textContent = `Forecast loaded: ${tempF}°F, ${windLabels[windVal]}, ${skyLabels[skyVal]}`;
     statusEl.className = 'forecast-status show success';
   } catch (err) {
     statusEl.textContent = err.message;
@@ -1291,7 +1336,7 @@ function calculate() {
   if (startTotalMin < 420) {
     startDate.setDate(startDate.getDate() - 1);
     startDate.setHours(21, 0, 0, 0);
-    warning = 'The calculation says to start before 7 AM. Start at 9 PM the evening before instead \u2014 the heater will run longer but the pool will be ready.';
+    warning = 'The calculation says to start before 7 AM. Start at 9 PM the evening before instead — the heater will run longer but the pool will be ready.';
   } else if (startTotalMin >= 1260) {
     startDate.setHours(21, 0, 0, 0);
     warning = 'Start time pushed to 9 PM (the latest recommended). The pool may take a bit longer to reach the exact target.';
@@ -1321,14 +1366,14 @@ function calculate() {
   if (dispMins > 0) durationStr += `${dispMins} min`;
   durationStr = durationStr.trim();
 
-  document.getElementById('heaterTime').textContent = `${fmtTime(startDate)} \u2014 ${fmtDate(startDate)}`;
-  document.getElementById('heaterDetail').textContent = `Turn on the pool heater to reach ${targetTemp}\u00B0F by ${fmtTime(deadlineDate)} on ${fmtDate(deadlineDate)}`;
+  document.getElementById('heaterTime').textContent = `${fmtTime(startDate)} — ${fmtDate(startDate)}`;
+  document.getElementById('heaterDetail').textContent = `Turn on the pool heater to reach ${targetTemp}°F by ${fmtTime(deadlineDate)} on ${fmtDate(deadlineDate)}`;
 
-  document.getElementById('blanketTime').textContent = `${fmtTime(blanketDate)} \u2014 ${fmtDate(blanketDate)}`;
+  document.getElementById('blanketTime').textContent = `${fmtTime(blanketDate)} — ${fmtDate(blanketDate)}`;
   document.getElementById('blanketDetail').textContent = 'Add 30 min after heater starts to lock in heat';
 
   document.getElementById('heatingDuration').textContent = durationStr;
-  document.getElementById('heatingDetail').textContent = `${degToRaise}\u00B0F to raise at ~${degPerHour}\u00B0F/hr (${wind} wind, ${sky})`;
+  document.getElementById('heatingDetail').textContent = `${degToRaise}°F to raise at ~${degPerHour}°F/hr (${wind} wind, ${sky})`;
 
   const propaneGalPerHour = 399000 / 91500;
   const propaneGallons = totalHours * propaneGalPerHour;
@@ -1366,7 +1411,7 @@ function calculate() {
   const fmtGal = (g) => g < 10 ? g.toFixed(1) : Math.round(g);
 
   document.getElementById('maintainPropane').textContent = `~${fmtGal(maint12)} / ${fmtGal(maint24)} / ${fmtGal(maint36)} gallons`;
-  document.getElementById('maintainDetail').textContent = `For 12 / 24 / 36 hrs at ${targetTemp}\u00B0F (${airTemp}\u00B0F air, ${wind} wind, ${sky})`;
+  document.getElementById('maintainDetail').textContent = `For 12 / 24 / 36 hrs at ${targetTemp}°F (${airTemp}°F air, ${wind} wind, ${sky})`;
 
   const warningEl = document.getElementById('warning');
   if (warning) { warningEl.textContent = warning; warningEl.classList.add('show'); }
@@ -1382,7 +1427,7 @@ function calculate() {
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Haas Estate Pool//EN','BEGIN:VEVENT',
     `DTSTART:${icsDate(startDate)}`,`DTEND:${icsDate(icsEnd)}`,
     'SUMMARY:Turn On Pool Heater',
-    `DESCRIPTION:Turn on the heater to reach ${targetTemp}\u00B0F by ${fmtTime(deadlineDate)}. Add liquid pool blanket at ${fmtTime(blanketDate)}.`,
+    `DESCRIPTION:Turn on the heater to reach ${targetTemp}°F by ${fmtTime(deadlineDate)}. Add liquid pool blanket at ${fmtTime(blanketDate)}.`,
     'BEGIN:VALARM','TRIGGER:-PT10M','ACTION:DISPLAY','DESCRIPTION:Time to turn on the pool heater!',
     'END:VALARM','END:VEVENT','END:VCALENDAR'
   ].join('\r\n');
@@ -1394,12 +1439,12 @@ function calculate() {
 
   document.getElementById('calcResults').classList.add('show');
   document.getElementById('calcResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Enable Next button
-  calcCompleted = true;
-  const nextBtn = document.getElementById('calcNextBtn');
-  if (nextBtn) { nextBtn.disabled = false; nextBtn.style.opacity = '1'; nextBtn.style.cursor = 'pointer'; }
 }
+
+// Initialize home screen calculator on load
+window.addEventListener('load', () => {
+  initializeHomeCalculator();
+});
 </script>
 
 </body>
