@@ -218,6 +218,45 @@
     background: var(--blue-light);
   }
 
+  /* Forecast button */
+  .forecast-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background: var(--gray-50);
+    color: var(--gray-700);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 14px;
+  }
+  .forecast-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-light);
+  }
+  .forecast-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .forecast-status {
+    font-size: 0.82rem;
+    color: var(--gray-500);
+    text-align: center;
+    margin-top: -8px;
+    margin-bottom: 10px;
+    display: none;
+  }
+  .forecast-status.show { display: block; }
+  .forecast-status.error { color: var(--orange); }
+  .forecast-status.success { color: var(--green); }
+
   /* Calendar button */
   .cal-btn {
     display: flex;
@@ -289,6 +328,10 @@
   <!-- Weather -->
   <div class="card">
     <div class="card-title">Forecast Weather Conditions</div>
+    <button class="forecast-btn" onclick="fetchForecast()" id="forecastBtn">
+      <span>🌤️</span> Auto-fill from forecast (32832)
+    </button>
+    <div class="forecast-status" id="forecastStatus"></div>
     <div class="row">
       <div class="field">
         <label>Air Temp (&deg;F)</label>
@@ -378,8 +421,7 @@
   </div>
 
   <div class="footer">
-    Based on Raypak P-M406A specs (~399K BTU input) &bull; 12,000 gal pool.<br>
-    Estimates may vary with pool cover, shade, and pump flow.
+    Based on Raypak P-M406A specs (~399K BTU input) &bull; 12,000 gal pool.
   </div>
 </div>
 
@@ -395,6 +437,77 @@
 
 function setDeadline(time) {
   document.getElementById('deadline').value = time;
+}
+
+async function fetchForecast() {
+  const dateVal = document.getElementById('deadlineDate').value;
+  const timeVal = document.getElementById('deadline').value;
+  const statusEl = document.getElementById('forecastStatus');
+  const btn = document.getElementById('forecastBtn');
+
+  if (!dateVal || !timeVal) {
+    statusEl.textContent = 'Please select a date and time first.';
+    statusEl.className = 'forecast-status show error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Fetching forecast...';
+  statusEl.className = 'forecast-status';
+
+  try {
+    // 32832 (Lake Nona, Orlando) coordinates
+    const lat = 28.3747;
+    const lon = -81.2239;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,wind_speed_10m,cloud_cover&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=America%2FNew_York`;
+
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Weather service unavailable');
+    const data = await resp.json();
+
+    // Find the closest hour to the selected date/time
+    const [dHour] = timeVal.split(':').map(Number);
+    const targetISO = `${dateVal}T${dHour.toString().padStart(2,'0')}:00`;
+
+    const idx = data.hourly.time.indexOf(targetISO);
+    if (idx === -1) {
+      throw new Error('Forecast not available for that date — try a date within the next 16 days.');
+    }
+
+    const tempF = Math.round(data.hourly.temperature_2m[idx]);
+    const windMph = data.hourly.wind_speed_10m[idx];
+    const cloudPct = data.hourly.cloud_cover[idx];
+
+    // Set air temp
+    document.getElementById('airTemp').value = tempF;
+
+    // Map wind speed to categories
+    let windVal;
+    if (windMph < 5) windVal = 'calm';
+    else if (windMph < 12) windVal = 'light';
+    else if (windMph < 20) windVal = 'moderate';
+    else windVal = 'strong';
+    document.getElementById('wind').value = windVal;
+
+    // Map cloud cover to sky categories
+    let skyVal;
+    if (cloudPct < 30) skyVal = 'sunny';
+    else if (cloudPct < 70) skyVal = 'partly';
+    else skyVal = 'overcast';
+    document.getElementById('sky').value = skyVal;
+
+    const windLabels = { calm: 'Calm', light: 'Light breeze', moderate: 'Moderate', strong: 'Strong' };
+    const skyLabels = { sunny: 'Sunny', partly: 'Partly cloudy', overcast: 'Overcast' };
+    statusEl.textContent = `Forecast loaded: ${tempF}°F, ${windLabels[windVal]}, ${skyLabels[skyVal]}`;
+    statusEl.className = 'forecast-status show success';
+
+  } catch (err) {
+    statusEl.textContent = err.message;
+    statusEl.className = 'forecast-status show error';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🌤️</span> Auto-fill from forecast (32832)';
+  }
 }
 
 function calculate() {
@@ -525,7 +638,7 @@ function calculate() {
   // Populate results
   document.getElementById('heaterTime').textContent = `${fmtTime(startDate)} — ${heaterDateStr}`;
   document.getElementById('heaterDetail').textContent =
-    `Turn on the Raypak to reach ${targetTemp}°F by ${fmtTime(deadlineDate)} on ${deadlineDateStr}`;
+    `Turn on the pool heater to reach ${targetTemp}°F by ${fmtTime(deadlineDate)} on ${deadlineDateStr}`;
 
   document.getElementById('blanketTime').textContent = `${fmtTime(blanketDate)} — ${blanketDateStr}`;
   document.getElementById('blanketDetail').textContent =
